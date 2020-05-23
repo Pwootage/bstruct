@@ -1,0 +1,18 @@
+{
+  "name": "bstruct",
+  "version": "1.0.0",
+  "description": "Binary struct parsing library",
+  "main": "index.js",
+  "repository": "git@github.com:Pwootage/bstruct.git",
+  "author": "Pwootage<pwootage@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "nearley": "^2.19.3"
+  },
+  "scripts": {
+    "build": "nearleyc grammar/bstruct.ne -o DIST/bstruct.js",
+    "railroad": "nearley-railroad grammar/bstruct.ne -o DIST/bstruct.html",
+    "test": "nearley-test DIST/bstruct.js -q < exmaples/example.bs"
+  }
+}
