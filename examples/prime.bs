@@ -1,0 +1,21 @@
+struct CPlayer: CPhysicsActor {
+    EPlayerMovementState jumpstate 0x258
+    f32 sjTimer 0x28C
+    u32 cameraState 0x2F4
+    u32 morphState 0x2F8
+    *CPlayerGun gun 0x490
+    *CMorphBall morphBall 0x768
+    *CPlayerCameraBob cameraBob 0x76C
+}
+
+enum EPlayerMovementState: u32 {
+    OnGround=0, Jump, ApplyJump, Falling, FallingMorphed
+}
+
+struct rstl::vector<T> {
+    *T first
+}
+
+struct TestVec {
+    rstl::vector<T> vec
+}

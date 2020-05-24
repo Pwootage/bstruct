@@ -1,11 +1,12 @@
 import {Parser, Grammar} from 'nearley';
 import grammar from './bstruct-grammar';
-import fs from 'fs';
+import fs, { link } from 'fs';
 import yargs from 'yargs';
 import { ASTRootStatement } from './ast/ASTRootStatement';
 import glob from 'glob';
 import {promisify} from 'util';
 import {lexer} from './bstruct-lexer';
+import { Linker } from './Linker';
 const globPromise = promisify(glob);
 
 function compileSource(src: string): ASTRootStatement[] {
@@ -48,8 +49,11 @@ async function main() {
     
     console.log(allStatements);
 
-    // Pass 1 complete
+    // Pass 1 complete, next up, link those classes
+    const linker = new Linker();
+    linker.link(allStatements);
 
+    console.log("Enums: ", linker.enums);
 }
 
 main().then(() => {
