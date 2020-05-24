@@ -15,3 +15,7 @@ enum EPlayerMovementState: u32 {
 struct rstl::vector<T> {
     *T first
 }
+
+struct TestVec {
+    rstl::vector<T> vec
+}
