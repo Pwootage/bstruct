@@ -8,11 +8,21 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "nearley": "^2.19.3"
+    "@types/moo": "^0.5.3",
+    "@types/nearley": "^2.11.1",
+    "@types/node": "^14.0.5",
+    "@types/yargs": "^15.0.5",
+    "nearley": "^2.19.3",
+    "yargs": "^15.3.1"
   },
   "scripts": {
-    "build": "nearleyc grammar/bstruct.ne -o DIST/bstruct.js",
-    "railroad": "nearley-railroad grammar/bstruct.ne -o DIST/bstruct.html",
-    "test": "nearley-test DIST/bstruct.js -q < exmaples/example.bs"
+    "build": "yarn build:grammar && yarn build:ts",
+    "build:grammar": "nearleyc grammar/bstruct.ne -o src/bstruct-grammar.ts",
+    "build:ts": "tsc",
+    "grammar:railroad": "nearley-railroad grammar/bstruct.ne -o lib/bstruct.html",
+    "grammar:test": "nearley-test lib/bstruct.js -q < exmaples/example.bs"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.3"
   }
 }
