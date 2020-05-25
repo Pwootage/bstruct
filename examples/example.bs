@@ -16,10 +16,7 @@ enum MyEnum: u32 {
     g
 }
 
-struct vector<T> {
-    *T first
-}
-
-struct TestVec {
-    vector<T> vec
+struct A {
+    size 0x20
+    A a
 }

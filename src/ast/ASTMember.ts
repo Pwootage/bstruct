@@ -1,12 +1,12 @@
 import { ASTType } from "./ASTType";
 import { ASTIdentifier } from "./ASTIdentifier";
-import { ASTTemplatableInt } from "./ASTTemplatableInt";
+import { ASTInt } from "./ASTInt";
 
 export class ASTMember {
     constructor(
         public memberType: ASTType,
         public name: ASTIdentifier,
-        public offset: ASTTemplatableInt | null
+        public offset: ASTInt | null
     ) {
 
     }

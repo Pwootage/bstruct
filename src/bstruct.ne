@@ -42,10 +42,10 @@ extends_decl -> ":" _ type (_ "," _ type):* {% ([,,first,others]) => {
     return res;
 } %}
 
-size_decl -> "size" __ templatable_int 
+size_decl -> "size" __ int 
     {% ([,,v]) => v %}
 
-struct_member -> type __ identifier (__ templatable_int):?
+struct_member -> type __ identifier (__ int):?
     {% ([type, ,name,offset]) => new ASTMember(type, name, offset?offset[1]:null) %}
 
 type -> pointer_indicator identifier template_values:? array_size:? 
@@ -77,8 +77,8 @@ templatable_int ->
 
 identifier -> %identifier {% id %}
 
-_ -> null | %ws {% () => null %}
-__ -> %ws {% () => null %}
+_ -> null | __
+__ -> (%ws | %comment):+ {% () => null %}
 
 int -> 
       %hex_int {% ([v]) => {return{type: 'hex', value: parseInt(v)};} %}

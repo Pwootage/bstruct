@@ -1,3 +1,3 @@
-import { ASTIdentifier } from "./ASTIdentifier";
+import { ASTType } from "./ASTType";
 
-export type ASTExtends = ASTIdentifier[];
+export type ASTExtends = ASTType[];

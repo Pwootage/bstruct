@@ -54,8 +54,11 @@ async function main() {
     linker.link(allStatements);
 
     console.log("Enums: ", linker.enums);
+    console.log("Structs: ", linker.structs);
 }
 
 main().then(() => {
     console.log("Done");
+}).catch(err => {
+    console.error("Error compiling", err.stack);
 });

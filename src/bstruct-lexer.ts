@@ -1,6 +1,7 @@
 import moo from 'moo';
 export const lexer = moo.compile({
     ws: {match: /[ \t\r\n]+/, lineBreaks: true},
+    comment: /\/\/.*?$/,
     identifier: {match: /(?:[a-zA-Z_][a-zA-Z0-9_]*)(?:::[a-zA-Z_][a-zA-Z0-9_]*)*/, type: moo.keywords({
         keyword: ['struct', 'size', 'enum'],
     })},

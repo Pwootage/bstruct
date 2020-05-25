@@ -10,7 +10,7 @@ export class ASTStruct {
         public name: ASTIdentifier,
         public template: ASTTemplateValues | null,
         public ext: ASTExtends | null,
-        public size: ASTTemplatableInt | null,
+        public size: ASTInt | null,
         public members: ASTMember[]
     ) {
     }
