@@ -6,14 +6,22 @@ struct MyClass: MySuper {
     MyEnum status
 }
 
+struct MySub: MyClass {
+    u8 state
+}
+
+struct MySuper2 {
+    f32 floatAfterGap 0x50
+}
+
+struct Other: MySuper2 {
+    u64 hash
+}
+
 enum MyEnum: u32 {
-    a,
-    b,
-    c,
-    d=7,
-    e,
-    f=0x10,
-    g
+    a, b, c,
+    d=7, e,
+    f=0x10, g,
 }
 
 struct A {

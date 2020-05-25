@@ -7,6 +7,7 @@ import glob from 'glob';
 import {promisify} from 'util';
 import {lexer} from './bstruct-lexer';
 import { Linker } from './Linker';
+import { BCompiler_Typescript } from './BCompiler_Typescript';
 const globPromise = promisify(glob);
 
 function compileSource(src: string): ASTRootStatement[] {
@@ -49,12 +50,20 @@ async function main() {
     
     console.log(allStatements);
 
-    // Pass 1 complete, next up, link those classes
+    // Parsed to an AST, now convert those to linked/specialized classes
     const linker = new Linker();
     linker.link(allStatements);
 
-    console.log("Enums: ", linker.enums);
-    console.log("Structs: ", linker.structs);
+    // Alrighty, time to output
+    let compiler = new BCompiler_Typescript();
+    let output = '';
+    for (let e of linker.enums) {
+        output += compiler.compileEnum(e);
+    }
+    for (let s of linker.structs) {
+        output += compiler.compileStruct(s);
+    }
+    console.log(output);
 }
 
 main().then(() => {

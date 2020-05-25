@@ -58,7 +58,7 @@ array_size -> "[" _ int _ "]"
 
 # Enum and it's values
 enum_decl -> "enum" __ identifier _ (":" _ identifier _):? "{" _
-        (enum_value (_ "," _ enum_value):*):?
+        (enum_value (_ "," _ enum_value):*):? ",":?
     _ "}" 
     {% ([ , ,name, , ext, , , values]) => new ASTEnum(name, [values[0],...values[1].map((v) => v[3])], ext?ext[2]:null) %}
 

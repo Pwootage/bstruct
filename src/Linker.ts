@@ -92,6 +92,9 @@ export class Linker {
         // Link our parent(s)
         {
             if (struct.original.ext) {
+                if (struct.original.ext.length > 1) {
+                    throw new Error(`Multiple inhereitance doesn't work right now`);
+                }
                 for (let s of struct.original.ext) {
                     if (s.pointer) {
                         throw new Error(`Can't extend a pointer`);
