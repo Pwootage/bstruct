@@ -17,8 +17,6 @@ import {ASTInt} from './ast/ASTInt';
 import {ASTExtends} from './ast/ASTExtends';
 import {ASTType} from './ast/ASTType';
 import {ASTRootStatement} from './ast/ASTRootStatement';
-import {ASTTemplatableInt} from './ast/ASTTemplatableInt';
-
 %}
 
 # Root
@@ -53,7 +51,7 @@ type -> pointer_indicator identifier template_values:? array_size:?
 
 pointer_indicator -> ("*" _):? {% ([v]) => !!v %}
 
-array_size -> "[" _ templatable_int _ "]" 
+array_size -> "[" _ int _ "]" 
     {% ([,,v]) => v %}
 
 # Enum and it's values
@@ -68,10 +66,6 @@ enum_value -> identifier (_ "=" _ int):?
 # templating
 template_values -> "<" _ identifier _ ("," _ identifier _):* ">"
     {% (arr) => [arr[2],...arr[4].map((v) => v[2])] %}
-
-templatable_int -> 
-      int {% id %}
-    | identifier {% id %}
 
 #primitives
 

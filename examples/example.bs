@@ -20,3 +20,17 @@ struct A {
     size 0x20
     A a
 }
+
+struct vector<T> {
+    *T first
+    u32 size
+    u32 capacity
+}
+
+struct Array {
+    i32[24] array
+}
+
+struct HasAVec {
+//    vector<i32> vec
+}

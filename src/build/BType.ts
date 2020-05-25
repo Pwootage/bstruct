@@ -17,4 +17,22 @@ export class BPointer {
     }
 }
 
-export type BType = BEnum | BStruct | BPrimitive | BPointer;
+export class BArray {
+    size: ASTInt;
+    name: ASTIdentifier;
+    constructor(
+        public type: BType,
+        public length: ASTInt
+    ) {
+        this.size = {
+            type: type.size!!.type,
+            value: type.size!!.value * this.length.value
+        };
+        this.name = {
+            ...type.name,
+            value: '*' + type.name.value
+        };
+    }
+}
+
+export type BType = BEnum | BStruct | BPrimitive | BPointer | BArray;

@@ -2,7 +2,6 @@ import { ASTIdentifier } from "./ASTIdentifier";
 import { ASTTemplateValues } from "./ASTTemplateValues";
 import { ASTExtends } from "./ASTExtends";
 import { ASTInt } from "./ASTInt";
-import { ASTTemplatableInt } from "./ASTTemplatableInt";
 import { ASTMember } from "./ASTMember";
 
 export class ASTStruct {

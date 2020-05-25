@@ -1,6 +1,6 @@
 import { ASTRootStatement } from "./ast/ASTRootStatement";
 import { ASTEnum } from "./ast/ASTEnum";
-import { BType, BPointer } from "./build/BType";
+import { BType, BPointer, BArray } from "./build/BType";
 import { BStruct, BStructMember } from "./build/BStruct";
 import { TypeLookup } from "./build/TypeLookup";
 import { BPrimitive, PU32, primitiveLookup, primitives } from "./build/BPrimitive";
@@ -70,6 +70,10 @@ export class Linker {
         if (struct.linkCompleted) {
             return; // Already did this one
         }
+        if (struct.original.template != null) {
+            return; // Link templates only at specialization
+        }
+
         this.linkStack.push(struct)
         if (struct.linkStarted) {
             let errorMessage = this.linkStack.map(v => v.name.value).join('->');
@@ -111,6 +115,9 @@ export class Linker {
                 if (type == null) throw new Error(`Unknwon type ${member.memberType.name}`);
                 if (member.memberType.pointer) {
                     type = new BPointer(type);
+                }
+                if (member.memberType.arraySize) {
+                    type = new BArray(type, member.memberType.arraySize);
                 }
 
                 // Find the offset
