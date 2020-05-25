@@ -4,6 +4,7 @@ import { BType } from "./BType";
 import { ASTStruct } from "../ast/ASTStruct";
 
 export class BStruct {
+    specialized = false;
     linkStarted = false;
     linkCompleted = false;
     size: ASTInt | null = null;

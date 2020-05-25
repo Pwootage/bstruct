@@ -17,7 +17,7 @@ enum MyEnum: u32 {
 }
 
 struct A {
-    size 0x20
+    size 20
     A a
 }
 
@@ -27,10 +27,14 @@ struct vector<T> {
     u32 capacity
 }
 
-struct Array {
-    i32[24] array
+struct FixedArray<T> {
+    T[10] array
 }
 
 struct HasAVec {
-//    vector<i32> vec
+    vector<i32> vec
+}
+
+struct HasAnArray {
+    FixedArray<A> arr
 }

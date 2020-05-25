@@ -8,6 +8,10 @@ import { BEnum } from "./build/BEnum";
 import { ASTStruct } from "./ast/ASTStruct";
 import { ASTMember } from "./ast/ASTMember";
 import { ASTInt } from "./ast/ASTInt";
+import { ASTTemplateValues } from "./ast/ASTTemplateValues";
+import { ASTIdentifier } from "./ast/ASTIdentifier";
+import { stringify } from "querystring";
+import { ASTType } from "./ast/ASTType";
 
 export class Linker {
     structs: BStruct[] = [];
@@ -30,10 +34,14 @@ export class Linker {
                 this.registerStruct(statement);
             }
         }
+
         // pass 2: link structs
         for (let struct of this.structs) {
             this.linkStruct(struct);
         }
+
+        // pass 3: remove non-specialized templated structs
+        this.structs = this.structs.filter((v) => !v.templated || v.specialized);
     }
 
     private linkEnum(astEnum: ASTEnum) {
@@ -70,7 +78,8 @@ export class Linker {
         if (struct.linkCompleted) {
             return; // Already did this one
         }
-        if (struct.original.template != null) {
+        if (struct.templated || struct.original.template != null) {
+            struct.templated = true;
             return; // Link templates only at specialization
         }
 
@@ -86,6 +95,9 @@ export class Linker {
                 for (let s of struct.original.ext) {
                     if (s.pointer) {
                         throw new Error(`Can't extend a pointer`);
+                    }
+                    if (s.template != null) {
+                        throw new Error(`Extending templated classes is not currently supported`);
                     }
                     let type = this.lookup.lookup(s.name);
                     if (type == null) {
@@ -112,12 +124,22 @@ export class Linker {
             for (let member of struct.original.members) {
                 // Find the type
                 let type = this.lookup.lookup(member.memberType.name);
-                if (type == null) throw new Error(`Unknwon type ${member.memberType.name}`);
+                if (type == null) throw new Error(`Unknwon type ${member.memberType.name.value}`);
                 if (member.memberType.pointer) {
                     type = new BPointer(type);
                 }
                 if (member.memberType.arraySize) {
                     type = new BArray(type, member.memberType.arraySize);
+                }
+                if (member.memberType.template) {
+                    if (!(type instanceof BStruct)) {
+                        throw new Error(`Can't specialize non-struct ${type.name.value}; ${struct.name.value}.${member.name.value}`);
+                    }
+                    try {
+                        type = this.specializeStruct(type, member.memberType.template);
+                    } catch (err) {
+                        throw new Error(`Error when specializing ${struct.name.value}.${member.name.value}: ${err.stack}`);
+                    }
                 }
 
                 // Find the offset
@@ -168,6 +190,58 @@ export class Linker {
         }
         this.linkStack.pop();
         struct.linkCompleted = true;
+    }
+
+    specializeStruct(type: BStruct, template: ASTTemplateValues): BStruct {
+        if (!type.templated || type.original.template == null) {
+            throw new Error(`Attempt to specialize class ${type.name.value}, which is not specializable`);
+        }
+        if (type.original.template.length != template.length) {
+            throw new Error(`Incorrect parameter count specializing ${type.name.value}`);
+        }
+        let specializedIdentifier: ASTIdentifier = {
+            ...type.name,
+            value: `${type.name.value}_${template.join('_')}`
+        };
+        let res = this.lookup.lookup(specializedIdentifier);
+        if (res != null) {
+            if (!(res instanceof BStruct) || !res.specialized) {
+                throw new Error(`Existing non-specialized type ${res.name.value}`);
+            }
+            return res;
+        }
+        let mappings = new Map<string, ASTIdentifier>()
+        for (let i = 0; i < template.length; i++) {
+            mappings.set(type.original.template[i].value, template[i]);
+        }
+        res = new BStruct(
+            new ASTStruct(
+                specializedIdentifier, 
+                null,
+                type.original.ext,
+                type.original.size,
+                type.original.members.map(member => {
+                    let typeName = mappings.get(member.memberType.name.value) 
+                        ?? member.memberType.name;
+                    return new ASTMember(
+                        new ASTType(
+                            member.memberType.pointer,
+                            typeName,
+                            null,
+                            member.memberType.arraySize
+                        ),
+                        member.name,
+                        member.offset
+                    )
+                })
+            ),
+            specializedIdentifier
+        );
+        res.specialized = true;
+        this.structs.push(res);
+        this.lookup.register(res);
+        this.linkStruct(res);
+        return res;
     }
 
     private linkPass() {

@@ -30,7 +30,7 @@ export class BArray {
         };
         this.name = {
             ...type.name,
-            value: '*' + type.name.value
+            value: type.name.value + `[${JSON.stringify(this.size)}]`
         };
     }
 }

@@ -32,7 +32,7 @@ struct_decl -> "struct" __ identifier (_ template_values):? (_ extends_decl):? _
         (size_decl _):?
         (struct_member _):*
     "}" 
-    {% ([ , ,name,template,ext, , , ,size,members]) => new ASTStruct(name, template?template[1]:null, ext?ext[1]:null, size, members.map((v: any[]) => v[0] as ASTMember)) %}
+    {% ([ , ,name,template,ext, , , ,size,members]) => new ASTStruct(name, template?template[1]:null, ext?ext[1]:null, size?size[0]:null, members.map((v: any[]) => v[0] as ASTMember)) %}
 
 extends_decl -> ":" _ type (_ "," _ type):* {% ([,,first,others]) => {
     let res = [first];
@@ -41,7 +41,9 @@ extends_decl -> ":" _ type (_ "," _ type):* {% ([,,first,others]) => {
 } %}
 
 size_decl -> "size" __ int 
-    {% ([,,v]) => v %}
+    {% ([,,v]) => {
+        return v;
+    } %}
 
 struct_member -> type __ identifier (__ int):?
     {% ([type, ,name,offset]) => new ASTMember(type, name, offset?offset[1]:null) %}
