@@ -20,7 +20,9 @@ export class BStructMember {
     constructor(
         public type: BType,
         public name: ASTIdentifier,
-        public offset: ASTInt
+        public offset: ASTInt,
+        public pointer: boolean,
+        public arrayLength: number | null
     ) {
     }
 }

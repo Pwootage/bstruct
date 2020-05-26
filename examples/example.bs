@@ -18,6 +18,10 @@ struct Other: MySuper2 {
     u64 hash
 }
 
+struct OtherPtr {
+    *Other ptr
+}
+
 enum MyEnum: u32 {
     a, b, c,
     d=7, e,
@@ -26,7 +30,7 @@ enum MyEnum: u32 {
 
 struct A {
     size 20
-    A a
+    u32 v
 }
 
 struct vector<T> {
@@ -45,4 +49,8 @@ struct HasAVec {
 
 struct HasAnArray {
     FixedArray<A> arr
+}
+
+struct TemplatedPointer {
+    *vector<f32> bad
 }

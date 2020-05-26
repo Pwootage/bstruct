@@ -1,0 +1,217 @@
+{
+  "enums": [
+    {
+      "name": "MyEnum",
+      "size": 4,
+      "values": [
+        {
+          "name": "a",
+          "value": 0
+        },
+        {
+          "name": "b",
+          "value": 1
+        },
+        {
+          "name": "c",
+          "value": 2
+        },
+        {
+          "name": "d",
+          "value": 7
+        },
+        {
+          "name": "e",
+          "value": 8
+        },
+        {
+          "name": "f",
+          "value": 16
+        },
+        {
+          "name": "g",
+          "value": 17
+        }
+      ]
+    }
+  ],
+  "structs": [
+    {
+      "name": "MySuper",
+      "size": 4,
+      "members": [
+        {
+          "name": "id",
+          "type": "i32",
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "name": "MyClass",
+      "size": 8,
+      "members": [
+        {
+          "name": "status",
+          "type": "MyEnum",
+          "offset": 4
+        }
+      ],
+      "extends": [
+        "MySuper"
+      ]
+    },
+    {
+      "name": "MySub",
+      "size": 9,
+      "members": [
+        {
+          "name": "state",
+          "type": "u8",
+          "offset": 8
+        }
+      ],
+      "extends": [
+        "MyClass"
+      ]
+    },
+    {
+      "name": "MySuper2",
+      "size": 84,
+      "members": [
+        {
+          "name": "floatAfterGap",
+          "type": "f32",
+          "offset": 80
+        }
+      ]
+    },
+    {
+      "name": "Other",
+      "size": 92,
+      "members": [
+        {
+          "name": "hash",
+          "type": "u64",
+          "offset": 84
+        }
+      ],
+      "extends": [
+        "MySuper2"
+      ]
+    },
+    {
+      "name": "OtherPtr",
+      "size": 4,
+      "members": [
+        {
+          "name": "ptr",
+          "type": "Other",
+          "offset": 0,
+          "pointer": true
+        }
+      ]
+    },
+    {
+      "name": "A",
+      "size": 20,
+      "members": [
+        {
+          "name": "v",
+          "type": "u32",
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "name": "HasAVec",
+      "size": 12,
+      "members": [
+        {
+          "name": "vec",
+          "type": "vector_i32",
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "name": "HasAnArray",
+      "size": 200,
+      "members": [
+        {
+          "name": "arr",
+          "type": "FixedArray_A",
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "name": "TemplatedPointer",
+      "size": 4,
+      "members": [
+        {
+          "name": "bad",
+          "type": "vector_f32",
+          "offset": 0,
+          "pointer": true
+        }
+      ]
+    },
+    {
+      "name": "vector_i32",
+      "size": 12,
+      "members": [
+        {
+          "name": "first",
+          "type": "i32",
+          "offset": 0,
+          "pointer": true
+        },
+        {
+          "name": "size",
+          "type": "u32",
+          "offset": 4
+        },
+        {
+          "name": "capacity",
+          "type": "u32",
+          "offset": 8
+        }
+      ]
+    },
+    {
+      "name": "FixedArray_A",
+      "size": 200,
+      "members": [
+        {
+          "name": "array",
+          "type": "A",
+          "offset": 0,
+          "arrayLength": 10
+        }
+      ]
+    },
+    {
+      "name": "vector_f32",
+      "size": 12,
+      "members": [
+        {
+          "name": "first",
+          "type": "f32",
+          "offset": 0,
+          "pointer": true
+        },
+        {
+          "name": "size",
+          "type": "u32",
+          "offset": 4
+        },
+        {
+          "name": "capacity",
+          "type": "u32",
+          "offset": 8
+        }
+      ]
+    }
+  ]
+}

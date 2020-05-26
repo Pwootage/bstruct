@@ -1,6 +1,6 @@
 import { ASTRootStatement } from "./ast/ASTRootStatement";
 import { ASTEnum } from "./ast/ASTEnum";
-import { BType, BPointer, BArray } from "./build/BType";
+import { BType } from "./build/BType";
 import { BStruct, BStructMember } from "./build/BStruct";
 import { TypeLookup } from "./build/TypeLookup";
 import { BPrimitive, PU32, primitiveLookup, primitives } from "./build/BPrimitive";
@@ -127,17 +127,15 @@ export class Linker {
             for (let member of struct.original.members) {
                 // Find the type
                 let type = this.lookup.lookup(member.memberType.name);
+                let pointer = member.memberType.pointer;
+                let arraySize: number | null = member.memberType.arraySize?.value;
+
                 if (type == null) throw new Error(`Unknwon type ${member.memberType.name.value}`);
-                if (member.memberType.pointer) {
-                    type = new BPointer(type);
-                }
-                if (member.memberType.arraySize) {
-                    type = new BArray(type, member.memberType.arraySize);
-                }
                 if (member.memberType.template) {
                     if (!(type instanceof BStruct)) {
                         throw new Error(`Can't specialize non-struct ${type.name.value}; ${struct.name.value}.${member.name.value}`);
                     }
+                    
                     try {
                         type = this.specializeStruct(type, member.memberType.template);
                     } catch (err) {
@@ -151,22 +149,20 @@ export class Linker {
                     if (lastMember == null) {
                         offset = {type: 'decimal', value: 0};
                     } else {
-                        if (lastMember.type instanceof BStruct) {
-                            this.linkStruct(lastMember.type);
-                        }
-                        if (lastMember.type.size == null) {
-                            throw new Error(`Failed to resolve size of ${struct.name.value}.${member.name.value}`);
-                        }
                         offset = {
                             type: lastMember.offset.type, 
-                            value: lastMember.offset.value + lastMember.type.size.value
+                            value: lastMember.offset.value + this.getMemberSize(lastMember)
                         };
                     }
                 }
-                //TODO
-                let template = member.memberType.template;
 
-                let newMember = new BStructMember(type, member.name, offset);
+                let newMember = new BStructMember(
+                    type, 
+                    member.name,
+                    offset,
+                    pointer,
+                    arraySize
+                );
                 struct.members.push(newMember);
                 lastMember = newMember;
             }
@@ -179,15 +175,9 @@ export class Linker {
                 struct.size = {type: 'decimal', value: 0};
             } else {
                 let lastMember = struct.members[struct.members.length - 1];
-                if (lastMember.type instanceof BStruct) {
-                    this.linkStruct(lastMember.type);
-                }
-                if (lastMember.type.size == null) {
-                    throw new Error(`Failed to resolve the size of ${struct.name.value}.${lastMember.name.value}`);
-                }
                 struct.size = {
                     type: lastMember.offset.type, 
-                    value: lastMember.offset.value + lastMember.type.size.value
+                    value: lastMember.offset.value + this.getMemberSize(lastMember)
                 };
             }
         }
@@ -195,7 +185,24 @@ export class Linker {
         struct.linkCompleted = true;
     }
 
-    specializeStruct(type: BStruct, template: ASTTemplateValues): BStruct {
+    private getMemberSize(lastMember: BStructMember): number {
+        if (lastMember.type instanceof BStruct) {
+            this.linkStruct(lastMember.type);
+        }
+        if (lastMember.type.size == null) {
+            throw new Error(`Failed to resolve the size of ${lastMember.name.value}`);
+        }
+        let size = lastMember.type.size.value;
+        if (lastMember.arrayLength != null && lastMember.arrayLength > 0) {
+            size = size * lastMember.arrayLength;
+        }
+        else if (lastMember.pointer) {
+            size = 4;
+        }
+        return size;
+    }
+
+    private specializeStruct(type: BStruct, template: ASTTemplateValues): BStruct {
         if (!type.templated || type.original.template == null) {
             throw new Error(`Attempt to specialize class ${type.name.value}, which is not specializable`);
         }
@@ -245,9 +252,5 @@ export class Linker {
         this.lookup.register(res);
         this.linkStruct(res);
         return res;
-    }
-
-    private linkPass() {
-
     }
 }

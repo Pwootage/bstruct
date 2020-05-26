@@ -7,7 +7,7 @@ import glob from 'glob';
 import {promisify} from 'util';
 import {lexer} from './bstruct-lexer';
 import { Linker } from './Linker';
-import { BCompiler_Typescript } from './BCompiler_Typescript';
+import { BCompiler_JSON } from './BCompiler_JSON';
 const globPromise = promisify(glob);
 
 function compileSource(src: string): ASTRootStatement[] {
@@ -30,10 +30,10 @@ async function main() {
             array: true
         })
         .option('o', {
-            alias: 'outDir',
+            alias: 'out-file',
             demandOption: true,
             type: 'string',
-            describe: 'Output directory'
+            describe: 'Output file'
         })
         .help()
         .argv;
@@ -55,15 +55,15 @@ async function main() {
     linker.link(allStatements);
 
     // Alrighty, time to output
-    let compiler = new BCompiler_Typescript();
-    let output = '';
-    for (let e of linker.enums) {
-        output += compiler.compileEnum(e);
-    }
-    for (let s of linker.structs) {
-        output += compiler.compileStruct(s);
-    }
-    console.log(output);
+    let compiler = new BCompiler_JSON();
+    let enums = linker.enums.map(v => compiler.compileEnum(v));
+    let structs = linker.structs.map(v => compiler.compileStruct(v));
+    let json = {
+        enums: enums,
+        structs: structs
+    };
+    let output = JSON.stringify(json, null, 2);
+    await promisify(fs.writeFile)(args.o, output);
 }
 
 main().then(() => {

@@ -17,7 +17,7 @@
                 "-i",
                 "examples/example.bs",
                 "-o",
-                "test"
+                "examples/example.json"
             ],
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
