@@ -2,11 +2,12 @@
   "name": "bstruct",
   "version": "1.0.0",
   "description": "Binary struct parsing library",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "git@github.com:Pwootage/bstruct.git",
   "author": "Pwootage<pwootage@gmail.com>",
   "license": "MIT",
   "private": false,
+  "files": ["lib/**/*"],
   "dependencies": {
     "@types/glob": "^7.1.1",
     "@types/moo": "^0.5.3",
@@ -18,12 +19,13 @@
     "yargs": "^15.3.1"
   },
   "scripts": {
-    "build": "yarn build:grammar && yarn build:ts",
+    "build": "npm run build:grammar && npm run build:ts",
     "build:grammar": "nearleyc src/bstruct.ne -o src/bstruct-grammar.ts",
     "build:ts": "tsc",
     "grammar:railroad": "nearley-railroad grammar/bstruct.ne -o lib/bstruct.html",
-    "grammar:test": "nearley-test lib/bstruct.js -q < exmaples/example.bs"
+    "grammar:test": "nearley-test lib/bstruct-grammar.js -q < exmaples/example.bs"
   },
+  "prepare" : "npm run build",
   "devDependencies": {
     "typescript": "^3.9.3"
   }
