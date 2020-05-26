@@ -1,5 +1,5 @@
 {
-  "name": "bstruct",
+  "name": "@pwootage/bstruct",
   "version": "1.0.0",
   "description": "Binary struct parsing library",
   "main": "lib/index.js",
