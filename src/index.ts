@@ -43,8 +43,6 @@ async function main() {
             return compileSource(src);
         })
     )).flat();
-    
-    console.log(allStatements);
 
     // Parsed to an AST, now convert those to linked/specialized classes
     const linker = new Linker();
