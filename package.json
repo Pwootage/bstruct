@@ -1,13 +1,15 @@
 {
   "name": "@pwootage/bstruct",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Binary struct parsing library",
   "main": "lib/index.js",
   "repository": "git@github.com:Pwootage/bstruct.git",
   "author": "Pwootage<pwootage@gmail.com>",
   "license": "MIT",
   "private": false,
-  "files": ["lib/**/*"],
+  "files": [
+    "lib/**/*"
+  ],
   "bin": {
     "bstructc": "lib/index.js"
   },
@@ -28,7 +30,7 @@
     "grammar:railroad": "nearley-railroad grammar/bstruct.ne -o lib/bstruct.html",
     "grammar:test": "nearley-test lib/bstruct-grammar.js -q < exmaples/example.bs"
   },
-  "prepare" : "npm run build",
+  "prepare": "npm run build",
   "devDependencies": {
     "typescript": "^3.9.3"
   }
