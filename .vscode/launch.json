@@ -15,9 +15,9 @@
             "preLaunchTask": "npm: build",
             "args": [
                 "-i",
-                "examples/example.bs",
+                "/Users/pwootage/projects/PrimeWatch/web/src/prime_defs/**/*.bs",
                 "-o",
-                "examples/example.json"
+                "/Users/pwootage/projects/PrimeWatch/web/src/assets/prime-defs.json"
             ],
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"

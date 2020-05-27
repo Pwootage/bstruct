@@ -8,11 +8,14 @@ export class BStruct {
     linkStarted = false;
     linkCompleted = false;
     size: ASTInt | null = null;
-    templated = false;
     ext: BStruct[] = [];
     members: BStructMember[] = [];
 
     constructor(public original: ASTStruct, public name: ASTIdentifier) {
+    }
+
+    get templated(): boolean {
+        return this.original.template != null;
     }
 }
 

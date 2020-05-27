@@ -78,8 +78,7 @@ export class Linker {
         if (struct.linkCompleted) {
             return; // Already did this one
         }
-        if (struct.templated || struct.original.template != null) {
-            struct.templated = true;
+        if (struct.templated) {
             return; // Link templates only at specialization
         }
 
@@ -195,8 +194,7 @@ export class Linker {
         let size = lastMember.type.size.value;
         if (lastMember.arrayLength != null && lastMember.arrayLength > 0) {
             size = size * lastMember.arrayLength;
-        }
-        else if (lastMember.pointer) {
+        } else if (lastMember.pointer) {
             size = 4;
         }
         return size;
