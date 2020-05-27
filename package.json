@@ -28,9 +28,9 @@
     "build:grammar": "nearleyc src/bstruct.ne -o src/bstruct-grammar.ts",
     "build:ts": "tsc",
     "grammar:railroad": "nearley-railroad grammar/bstruct.ne -o lib/bstruct.html",
-    "grammar:test": "nearley-test lib/bstruct-grammar.js -q < exmaples/example.bs"
+    "grammar:test": "nearley-test lib/bstruct-grammar.js -q < exmaples/example.bs",
+    "prepare": "npm run build"
   },
-  "prepare": "npm run build",
   "devDependencies": {
     "typescript": "^3.9.3"
   }
