@@ -28,7 +28,7 @@ root_statement ->
     | enum_decl {% id %}
 
 # Struct and it's members
-struct_decl -> "struct" __ identifier (_ template_values):? (_ extends_decl):? _ "{" _ 
+struct_decl -> "struct" __ identifier (_ template_def):? (_ extends_decl):? _ "{" _ 
         (size_decl _):?
         (struct_member _):*
     "}" 
@@ -66,7 +66,10 @@ enum_value -> identifier (_ "=" _ int):?
     {% ([name, value]) => new ASTEnumValue(name, value?value[3]:null) %}
 
 # templating
-template_values -> "<" _ identifier _ ("," _ identifier _):* ">"
+template_def -> "<" _ identifier _ ("," _ identifier _):* ">"
+    {% (arr) => [arr[2],...arr[4].map((v) => v[2])] %}
+
+template_values -> "<" _ type _ ("," _ type _):* ">"
     {% (arr) => [arr[2],...arr[4].map((v) => v[2])] %}
 
 #primitives

@@ -188,14 +188,17 @@ export class Linker {
         if (lastMember.type instanceof BStruct) {
             this.linkStruct(lastMember.type);
         }
+
+        if (lastMember.pointer) {
+            return 4;
+        }
+        
         if (lastMember.type.size == null) {
             throw new Error(`Failed to resolve the size of ${lastMember.name.value}`);
         }
         let size = lastMember.type.size.value;
         if (lastMember.arrayLength != null && lastMember.arrayLength > 0) {
             size = size * lastMember.arrayLength;
-        } else if (lastMember.pointer) {
-            size = 4;
         }
         return size;
     }
@@ -207,10 +210,7 @@ export class Linker {
         if (type.original.template.length != template.length) {
             throw new Error(`Incorrect parameter count specializing ${type.name.value}`);
         }
-        let specializedIdentifier: ASTIdentifier = {
-            ...type.name,
-            value: `${type.name.value}_${template.join('_')}`
-        };
+        let specializedIdentifier: ASTIdentifier = this.getSpecializedIdentifier(type.name, template);
         let res = this.lookup.lookup(specializedIdentifier);
         if (res != null) {
             if (!(res instanceof BStruct) || !res.specialized) {
@@ -220,7 +220,19 @@ export class Linker {
         }
         let mappings = new Map<string, ASTIdentifier>()
         for (let i = 0; i < template.length; i++) {
-            mappings.set(type.original.template[i].value, template[i]);
+            let target = template[i];
+            let destStruct = this.lookup.lookup(target.name);
+            if (destStruct == null) {
+                throw new Error(`Unknown type ${target.name.value}`);
+            }
+            if (target.template != null) {
+                if (!(destStruct instanceof BStruct)) {
+                    throw new Error(`Can't specialize non-struct ${type.name.value}`);
+            }
+
+                destStruct = this.specializeStruct(destStruct, target.template);
+            }
+            mappings.set(type.original.template[i].value, destStruct?.name);
         }
         res = new BStruct(
             new ASTStruct(
@@ -229,15 +241,9 @@ export class Linker {
                 type.original.ext,
                 type.original.size,
                 type.original.members.map(member => {
-                    let typeName = mappings.get(member.memberType.name.value) 
-                        ?? member.memberType.name;
+                    const newType = this.substituteTypes(mappings, member.memberType);
                     return new ASTMember(
-                        new ASTType(
-                            member.memberType.pointer,
-                            typeName,
-                            null,
-                            member.memberType.arraySize
-                        ),
+                        newType,
                         member.name,
                         member.offset
                     )
@@ -250,5 +256,34 @@ export class Linker {
         this.lookup.register(res);
         this.linkStruct(res);
         return res;
+    }
+
+    private substituteTypes(mappings: Map<string, ASTIdentifier>, typ: ASTType): ASTType {
+        let typeName = mappings.get(typ.name.value)
+            ?? typ.name;
+        let template: ASTTemplateValues | null = null;
+        if (typ.template) {
+            template = typ.template?.map(v => this.substituteTypes(mappings, v))
+        }
+        const newType = new ASTType(
+            typ.pointer, 
+            typeName,
+            template,
+            typ.arraySize
+        );
+        return newType;
+    }
+
+    private getSpecializedIdentifier(name: ASTIdentifier, template: ASTTemplateValues): ASTIdentifier {
+        return {
+            ...name,
+            value: `${name.value}<${template.map(v => {
+                if (v.template) {
+                    return this.getSpecializedIdentifier(v.name, v.template).value
+                } else {
+                    return v.name.value
+                }
+            }).join(', ')}>`
+        };
     }
 }
