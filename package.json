@@ -8,6 +8,9 @@
   "license": "MIT",
   "private": false,
   "files": ["lib/**/*"],
+  "bin": {
+    "bstructc": "lib/index.js"
+  },
   "dependencies": {
     "@types/glob": "^7.1.1",
     "@types/moo": "^0.5.3",

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import {Parser, Grammar} from 'nearley';
 import grammar from './bstruct-grammar';
 import fs, { link } from 'fs';
