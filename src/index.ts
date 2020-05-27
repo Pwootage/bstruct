@@ -2,22 +2,16 @@
 
 import {Parser, Grammar} from 'nearley';
 import grammar from './bstruct-grammar';
-import fs, { link } from 'fs';
+import fs from 'fs';
 import yargs from 'yargs';
 import { ASTRootStatement } from './ast/ASTRootStatement';
 import glob from 'glob';
 import {promisify} from 'util';
-import {lexer} from './bstruct-lexer';
 import { Linker } from './Linker';
 import { BCompiler_JSON } from './BCompiler_JSON';
 const globPromise = promisify(glob);
 
 function compileSource(src: string): ASTRootStatement[] {
-    lexer.reset(src);
-    for (let t of lexer) {
-        console.log(t);
-    }
-
     const parser = new Parser(Grammar.fromCompiled(grammar as any));
     parser.feed(src);
     return parser.results[0];
