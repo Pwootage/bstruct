@@ -7,7 +7,7 @@ export const lexer = moo.compile({
     })},
     hex_int: /0[xX][0-9A-Fa-f]+/,
     binary_int: /0[bB][01]+/,
-    decimal_int: /(?:0)|(?:[1-9][0-9]*)/,
+    decimal_int: /(?:0)|(?:-?[1-9][0-9]*)/,
     equals: '=',
     doublecolon: '::',
     colon: ':',
