@@ -9,6 +9,8 @@ import glob from 'glob';
 import {promisify} from 'util';
 import { Linker } from './Linker';
 import { BCompiler_JSON } from './BCompiler_JSON';
+import { deserialize } from 'v8';
+import { BCompiler_010 } from './BCompiler_010';
 const globPromise = promisify(glob);
 
 function compileSource(src: string): ASTRootStatement[] {
@@ -31,6 +33,12 @@ async function main() {
             type: 'string',
             describe: 'Output file'
         })
+        .option('format', {
+            type: 'string',
+            choices: ['json', '010'],
+            describe: 'Format to write',
+            default: 'json'
+        })
         .help()
         .argv;
  
@@ -49,15 +57,23 @@ async function main() {
     linker.link(allStatements);
 
     // Alrighty, time to output
-    let compiler = new BCompiler_JSON();
-    let enums = linker.enums.map(v => compiler.compileEnum(v));
-    let structs = linker.structs.map(v => compiler.compileStruct(v));
-    let json = {
-        enums: enums,
-        structs: structs
-    };
-    let output = JSON.stringify(json, null, 2);
-    await promisify(fs.writeFile)(args.o, output);
+    if (args.format == 'json') {
+        let compiler = new BCompiler_JSON();
+        let enums = linker.enums.map(v => compiler.compileEnum(v));
+        let structs = linker.structs.map(v => compiler.compileStruct(v));
+        let json = {
+            enums: enums,
+            structs: structs
+        };
+        let output = JSON.stringify(json, null, 2);
+        await promisify(fs.writeFile)(args.o, output);
+    } else if (args.format == '010') {
+        let compiler = new BCompiler_010(linker.enums, linker.structs);
+        let output = compiler.compile();
+        await promisify(fs.writeFile)(args.o, output);
+    } else {
+        console.error(`Unknown output format ${args.format}`);
+    }
 }
 
 main().then(() => {

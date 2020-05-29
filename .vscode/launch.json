@@ -17,7 +17,9 @@
                 "-i",
                 "/Users/pwootage/projects/PrimeWatch/web/src/prime_defs/**/*.bs",
                 "-o",
-                "/Users/pwootage/projects/PrimeWatch/web/src/assets/prime-defs.json"
+                "/Users/pwootage/projects/PrimeWatch/web/src/assets/prime-defs.bt",
+                "--format",
+                "010"
             ],
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
