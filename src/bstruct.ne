@@ -30,9 +30,10 @@ root_statement ->
 # Struct and it's members
 struct_decl -> "struct" __ identifier (_ template_def):? (_ extends_decl):? _ "{" _ 
         (size_decl _):?
+        (vtable_decl _):?
         (struct_member _):*
     "}" 
-    {% ([ , ,name,template,ext, , , ,size,members]) => new ASTStruct(name, template?template[1]:null, ext?ext[1]:null, size?size[0]:null, members.map((v: any[]) => v[0] as ASTMember)) %}
+    {% ([ , ,name,template,ext, , , ,size,vtable,members]) => new ASTStruct(name, template?template[1]:null, ext?ext[1]:null, size?size[0]:null, vtable?vtable[0]:null, members.map((v: any[]) => v[0] as ASTMember)) %}
 
 extends_decl -> ":" _ type (_ "," _ type):* {% ([,,first,others]) => {
     let res = [first];
@@ -41,6 +42,11 @@ extends_decl -> ":" _ type (_ "," _ type):* {% ([,,first,others]) => {
 } %}
 
 size_decl -> "size" __ int 
+    {% ([,,v]) => {
+        return v;
+    } %}
+
+vtable_decl -> "vtable" __ int 
     {% ([,,v]) => {
         return v;
     } %}

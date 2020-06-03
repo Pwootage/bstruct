@@ -88,6 +88,8 @@ export class Linker {
             throw new Error(`Circular reference detected: ${errorMessage}`);
         }
         struct.linkStarted = true;
+        // Copy over the vtable if it exists
+        struct.vtable = struct.original.vtable;
         // Link our parent(s)
         {
             if (struct.original.ext) {
@@ -242,6 +244,7 @@ export class Linker {
                 null,
                 type.original.ext,
                 type.original.size,
+                type.original.vtable,
                 type.original.members.map(member => {
                     const newType = this.substituteTypes(mappings, member.memberType);
                     return new ASTMember(

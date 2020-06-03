@@ -8,6 +8,7 @@ export class BStruct {
     linkStarted = false;
     linkCompleted = false;
     size: ASTInt | null = null;
+    vtable: ASTInt | null = null;
     ext: BStruct[] = [];
     members: BStructMember[] = [];
 

@@ -10,6 +10,7 @@ export class ASTStruct {
         public template: ASTTemplateDefs | null,
         public ext: ASTExtends | null,
         public size: ASTInt | null,
+    public vtable: ASTInt | null,
         public members: ASTMember[]
     ) {
     }

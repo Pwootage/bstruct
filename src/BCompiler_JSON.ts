@@ -15,6 +15,7 @@ export interface CompiledEnumValue {
 export interface CompiledStruct {
     name: string;
     size: number;
+    vtable?: number;
     extends?: string[];
     members: CompiledMember[];
 }
@@ -50,6 +51,7 @@ export class BCompiler_JSON {
         let res: CompiledStruct = {
             name: s.name.value,
             size: s.size!!.value,
+            vtable: s.vtable?.value,
             members: s.members.map(v => this.compileMember(v))
         };
 
