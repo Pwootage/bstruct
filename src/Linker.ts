@@ -159,6 +159,8 @@ export class Linker {
                     type, 
                     member.name,
                     offset,
+                    member.bit,
+                    member.bitLength,
                     pointer,
                     arraySize
                 );
@@ -245,7 +247,9 @@ export class Linker {
                     return new ASTMember(
                         newType,
                         member.name,
-                        member.offset
+                        member.offset,
+                        member.bit,
+                        member.bitLength
                     )
                 })
             ),

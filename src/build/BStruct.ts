@@ -24,6 +24,8 @@ export class BStructMember {
         public type: BType,
         public name: ASTIdentifier,
         public offset: ASTInt,
+        public bit: ASTInt | null,
+        public bitLength: ASTInt | null,
         public pointer: boolean,
         public arrayLength: number | null
     ) {

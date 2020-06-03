@@ -45,8 +45,8 @@ size_decl -> "size" __ int
         return v;
     } %}
 
-struct_member -> type __ identifier (__ int):?
-    {% ([type, ,name,offset]) => new ASTMember(type, name, offset?offset[1]:null) %}
+struct_member -> type __ identifier (__ int):? (_ ":" _ int _ ":" _ int):?
+    {% ([type, ,name,offset,bit]) => new ASTMember(type, name, offset?offset[1]:null,bit?bit[3]:null,bit?bit[7]:null) %}
 
 type -> pointer_indicator identifier template_values:? array_size:? 
     {% ([ptr, name, template, array_size]) => new ASTType(ptr, name, template, array_size) %}

@@ -6,7 +6,9 @@ export class ASTMember {
     constructor(
         public memberType: ASTType,
         public name: ASTIdentifier,
-        public offset: ASTInt | null
+        public offset: ASTInt | null,
+        public bit: ASTInt | null,
+        public bitLength: ASTInt | null
     ) {
 
     }

@@ -19,7 +19,9 @@
                 "-o",
                 "/Users/pwootage/projects/PrimeWatch/web/src/assets/prime-defs.bt",
                 "--format",
-                "010"
+                "010",
+                "--suffix-file",
+                "/Users/pwootage/projects/PrimeWatch/web/src/prime_defs/prime1/010suffix.bt"
             ],
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"

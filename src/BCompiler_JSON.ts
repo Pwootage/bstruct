@@ -23,6 +23,8 @@ export interface CompiledMember {
     name: string;
     type: string;
     offset: number;
+    bit?: number;
+    bitLength?: number;
     arrayLength? :number;
     pointer?: boolean;
 }
@@ -61,7 +63,9 @@ export class BCompiler_JSON {
         let res: CompiledMember = {
             name: m.name.value,
             type: m.type.name.value,
-            offset: m.offset.value
+            offset: m.offset.value,
+            bit: m.bit?.value,
+            bitLength: m.bitLength?.value
         };
         if (m.pointer) {
             res.pointer = true;

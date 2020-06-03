@@ -33,6 +33,10 @@ async function main() {
             type: 'string',
             describe: 'Output file'
         })
+        .option('suffix-file', {
+            type: 'string',
+            describe: 'File to append to the 010 output'
+        })
         .option('format', {
             type: 'string',
             choices: ['json', '010'],
@@ -70,6 +74,9 @@ async function main() {
     } else if (args.format == '010') {
         let compiler = new BCompiler_010(linker.enums, linker.structs);
         let output = compiler.compile();
+        if (args["suffix-file"]) {
+            output += fs.readFileSync(args["suffix-file"]);
+        }
         await promisify(fs.writeFile)(args.o, output);
     } else {
         console.error(`Unknown output format ${args.format}`);

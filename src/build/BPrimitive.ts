@@ -17,6 +17,7 @@ function gen_id(name: string): ASTIdentifier {
         lineBreaks: 0
     };
 }
+export const PBOOL: BPrimitive = { type: 'primitive', name: gen_id('bool'), size: { type: 'decimal', value: 1 } };
 export const PU8: BPrimitive = { type: 'primitive', name: gen_id('u8'), size: { type: 'decimal', value: 1 } };
 export const PU16: BPrimitive = { type: 'primitive', name: gen_id('u16'), size: { type: 'decimal', value: 2 } };
 export const PU32: BPrimitive = { type: 'primitive', name: gen_id('u32'), size: { type: 'decimal', value: 4 } };
@@ -28,6 +29,7 @@ export const PI64: BPrimitive = { type: 'primitive', name: gen_id('i64'), size: 
 export const PF32: BPrimitive = { type: 'primitive', name: gen_id('f32'), size: { type: 'decimal', value: 4 } };
 export const PF64: BPrimitive = { type: 'primitive', name: gen_id('f64'), size: { type: 'decimal', value: 8 } };
 export const primitives: BPrimitive[] = [
+    PBOOL,
     PU8,
     PU16,
     PU32,
