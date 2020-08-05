@@ -175,7 +175,22 @@ export class Linker {
             if (struct.original.size !== null) {
                 struct.size = struct.original.size
             } else if (struct.members.length == 0) {
-                struct.size = {type: 'decimal', value: 0};
+                // Last member of our last parent is the previous member, if it exists
+                let lastMember: BStructMember | null = null;
+                for (let i = struct.ext.length - 1; i >= 0; i--) {
+                    let parent = struct.ext[i];
+                    if (parent.members.length > 0) {
+                        lastMember = parent.members[parent.members.length - 1];
+                    }
+                }
+                if (lastMember != null) {
+                    struct.size = {
+                        type: lastMember.offset.type, 
+                        value: lastMember.offset.value + this.getMemberSize(lastMember)
+                    };
+                } else {
+                    struct.size = {type: 'decimal', value: 0};
+                }
             } else {
                 let lastMember = struct.members[struct.members.length - 1];
                 struct.size = {
