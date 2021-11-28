@@ -1,6 +1,6 @@
 {
   "name": "@pwootage/bstruct",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "Binary struct parsing library",
   "main": "lib/index.js",
   "repository": "git@github.com:Pwootage/bstruct.git",
