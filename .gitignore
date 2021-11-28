@@ -1,3 +1,4 @@
 /node_modules
 /lib
 /src/bstruct-grammar.ts
+/.idea

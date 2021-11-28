@@ -139,7 +139,7 @@ export class Linker {
                     
                     try {
                         type = this.specializeStruct(type, member.memberType.template);
-                    } catch (err) {
+                    } catch (err: any) {
                         throw new Error(`Error when specializing ${struct.name.value}.${member.name.value}: ${err.stack}`);
                     }
                 }

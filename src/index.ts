@@ -2,15 +2,15 @@
 
 import {Parser, Grammar} from 'nearley';
 import grammar from './bstruct-grammar';
-import fs from 'fs';
+import fs from 'fs/promises';
 import yargs from 'yargs';
-import { ASTRootStatement } from './ast/ASTRootStatement';
+import {ASTRootStatement} from './ast/ASTRootStatement';
 import glob from 'glob';
 import {promisify} from 'util';
-import { Linker } from './Linker';
-import { BCompiler_JSON } from './BCompiler_JSON';
-import { deserialize } from 'v8';
-import { BCompiler_010 } from './BCompiler_010';
+import {Linker} from './Linker';
+import {BCompiler_JSON} from './BCompiler_JSON';
+import {BCompiler_010} from './BCompiler_010';
+
 const globPromise = promisify(glob);
 
 function compileSource(src: string): ASTRootStatement[] {
@@ -20,7 +20,7 @@ function compileSource(src: string): ASTRootStatement[] {
 }
 
 async function main() {
-    const args = yargs
+    const args: any = yargs
         .option('i', {
             demandOption: true,
             type: 'string',
@@ -45,13 +45,13 @@ async function main() {
         })
         .help()
         .argv;
- 
+
     const allFiles = (await Promise.all(
         args.i.map(v => globPromise(v))
     )).flat();
     const allStatements = (await Promise.all(
         allFiles.map(async file => {
-            const src = await promisify(fs.readFile)(file, {encoding: 'utf-8'})
+            const src = await fs.readFile(file, {encoding: 'utf-8'})
             return compileSource(src);
         })
     )).flat();
@@ -70,14 +70,14 @@ async function main() {
             structs: structs
         };
         let output = JSON.stringify(json, null, 2);
-        await promisify(fs.writeFile)(args.o, output);
+        await fs.writeFile(args.o, output);
     } else if (args.format == '010') {
         let compiler = new BCompiler_010(linker.enums, linker.structs);
         let output = compiler.compile();
         if (args["suffix-file"]) {
-            output += fs.readFileSync(args["suffix-file"]);
+            output += await fs.readFile(args["suffix-file"]);
         }
-        await promisify(fs.writeFile)(args.o, output);
+        await fs.writeFile(args.o, output);
     } else {
         console.error(`Unknown output format ${args.format}`);
     }
